@@ -9,11 +9,13 @@ import Schemes from "./components/schemes/schemes";
 import Remedies from "./components/remedies/remedies";
 import Prediction from "./components/prediction/prediction"
 import Forum from "./components/forum/forum";
+import Chatbot from "./components/chatbot/chatbot";
 import "./App.css";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currUser,setCurrUser]=useState("");
+  const [predictionResult, setPredictionResult] = useState(null);
 
   useEffect(() => {
   const token = localStorage.getItem("authToken");
@@ -34,24 +36,69 @@ function App() {
     setIsAuthenticated(false);
   };
 
-  return (
-    <Router>
+ return (
+  <Router>
+    <>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route
+          path="/login"
+          element={<Login onLogin={handleLogin} />}
+        />
         <Route path="/signup" element={<Signup />} />
 
-        <Route path="/dashboard/*" element={isAuthenticated ? <Dashboard currUser={currUser} onLogout={handleLogout} /> : <Navigate to="/login" replace />}>
-          <Route index element={<Navigate to="prediction"  />} /> 
-          <Route path="prediction" element={<Prediction/>} />
-          <Route path="calendar" element={<Calendar currUser={currUser}/>} />
-          <Route path="schemes" element={<Schemes />} />
-          <Route path="remedies" element={<Remedies />} />
-          <Route path="forum" element={<Forum currUser={currUser} />} />
+        <Route
+          path="/dashboard/*"
+          element={
+            isAuthenticated ? (
+              <Dashboard
+                currUser={currUser}
+                onLogout={handleLogout}
+              />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        >
+          <Route
+            index
+            element={<Navigate to="prediction" />}
+          />
+
+          <Route
+            path="prediction"
+            element={
+              <Prediction
+                setPredictionResult={setPredictionResult}
+              />
+            }
+          />
+
+          <Route
+            path="calendar"
+            element={<Calendar currUser={currUser} />}
+          />
+
+          <Route
+            path="schemes"
+            element={<Schemes />}
+          />
+
+          <Route
+            path="remedies"
+            element={<Remedies />}
+          />
+
+          <Route
+            path="forum"
+            element={<Forum currUser={currUser} />}
+          />
         </Route>
       </Routes>
-    </Router>
-  );
+      
+      <Chatbot result={predictionResult} />    </>
+  </Router>
+);
 }
 
 export default App;

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./prediction.css";
 import PredictionResult from "./../predictionResult/predictionResult";
 
-const Prediction = () => {
+const Prediction = ({ setPredictionResult }) => {  
   const [formData, setFormData] = useState({
     age: "",
     weight: "",
@@ -129,10 +129,17 @@ const Prediction = () => {
       if (predictionData.error) throw new Error(predictionData.error);
       if (explanationData.error) throw new Error(explanationData.error);
 
-      setResult({
+      const finalResult = {
         ...predictionData,
         explanation: explanationData.lime_explanation,
-      });
+        formData: payload,
+      };
+
+setResult(finalResult);
+setPredictionResult(finalResult);
+
+
+
     } catch (err) {
       setResult({ error: err.message });
     } finally {
